@@ -1,0 +1,22 @@
+genotypelist = [1,1,1,3/4,1/4,0]
+
+"""
+genotypelist has the probabilites of the offspring showing the dominant phenotype,
+if their parents have the following genotype:
+AA-AA
+AA-Aa
+AA-aa
+Aa-Aa
+Aa-aa
+aa-aa
+"""
+
+def expectednumber(inputlist):
+    expnum = 0
+    for count,i in enumerate(inputlist):
+        expnum += i*2*genotypelist[count]
+    return expnum
+
+
+sample = [19082,17599,16757,16775,16484,18501]
+print(expectednumber(sample))
