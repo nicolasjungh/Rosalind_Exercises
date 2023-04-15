@@ -1,0 +1,54 @@
+sample = open("", "r") #insert your path here
+sample = sample.read()
+
+
+def fastatolist(fasta):
+  output = []
+  output3 = []
+  header = False
+  seq = False
+  outputcount = -1
+  for i in fasta:
+    if i == ">":
+      header = True
+      seq = False
+      outputcount += 1
+      output3.append([])
+    elif header == True and i != "\n":
+      output3[outputcount] += i
+    elif header == True and i == "\n":
+      header = False
+      seq = True
+      output.append([])
+    elif seq == True:
+      if i != " " and i != "" and i != "\n":
+        output[outputcount] += i
+  output2 = []
+  output4 = []
+  for j in output:
+    output2.append("".join(j))
+  for k in output3:
+    output4.append("".join(k))
+  return output2, output4
+
+
+def getadjacancy(inputlist, labellist): #input list with sequences and list with corresponding fasta labels
+  outputlist = []
+  for i in range(len(inputlist)):
+    for j in range(len(inputlist)):
+      # print(inputlist[i][-3:])
+      # print(inputlist[j][0:3])
+      if i != j:
+        if inputlist[i][-3:] == inputlist[j][0:3]:
+          outputlist.append([labellist[i], labellist[j]])
+  outputtext = ""
+  for j in outputlist:
+    outputtext += j[0]
+    outputtext += " "
+    outputtext += j[1]
+    outputtext += "\n"
+  return outputtext
+
+print(getadjacancy(fastatolist(sample)[0], fastatolist(sample)[1]))
+with open('rosalind_overlap_graph.txt', 'w') as f:
+  f.write(getadjacancy(fastatolist(sample)[0], fastatolist(sample)[1]))
