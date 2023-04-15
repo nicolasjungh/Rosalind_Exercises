@@ -1,0 +1,83 @@
+import numpy as np
+
+sample = open("", "r") #insert your path
+sample = sample.read()
+
+
+def fastatomatrix(fasta):
+  output = []
+  header = False
+  seq = False
+  outputcount = -1
+  for i in fasta:
+    if i == ">":
+      header = True
+      seq = False
+      outputcount += 1
+    elif header == True and i == "\n":
+      header = False
+      seq = True
+      output.append([])
+    elif seq == True:
+      if i != " " and i != "" and i != "\n":
+        output[outputcount] += i
+  output2 = []
+  for j in output:
+      output2.append("".join(j))
+  return output2
+
+def getprofile(matrix):
+  outputmatrix = np.zeros((4,len(matrix[0])), dtype = int)
+  for i in matrix:
+    for count,j in enumerate(i):
+      if j == "A":
+        outputmatrix[0,count] += 1
+      elif j == "C":
+        outputmatrix[1,count] += 1
+      elif j == "G":
+        outputmatrix[2,count] += 1
+      else:
+        outputmatrix[3,count] += 1
+  return outputmatrix
+
+def getconsenus(matrix):
+  maxima = np.argmax(matrix, axis=0)
+  mymap = np.array(["A", "C", "G", "T"])
+  outputvector = [i for i in mymap[maxima]]
+  return "".join(outputvector)
+
+def printout(profile):
+    loop = profile.shape[1]
+    profiletext = ""
+    for i in range(4):
+        if i == 0:
+            profiletext += "A: "
+            for j in range(loop):
+                profiletext += str(profile[0,j]) + " "
+            profiletext += "\n"
+        elif i == 1:
+            profiletext += "C: "
+            for j in range(loop):
+                profiletext += str(profile[1,j]) + " "
+            profiletext += "\n"
+        elif i == 2:
+            profiletext += "G: "
+            for j in range(loop):
+                profiletext += str(profile[2,j]) + " "
+            profiletext += "\n"
+        elif i == 3:
+            profiletext += "T: "
+            for j in range(loop):
+                profiletext += str(profile[3,j]) + " "
+            profiletext += "\n"
+    return profiletext
+
+np.set_printoptions(threshold=np.inf)
+firstmatrix = fastatomatrix(sample)
+secondmatrix = getprofile(firstmatrix)
+thirdmatrix = getconsenus(secondmatrix)
+print(secondmatrix)
+print(printout(secondmatrix))
+
+with open('outputsample.txt', 'w') as f:
+    f.write(thirdmatrix + "\n" + printout(secondmatrix))
